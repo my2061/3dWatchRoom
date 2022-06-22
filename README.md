@@ -1,8 +1,8 @@
-# 手把手教你实现3D看房
+[toc]
 
 ## 最终效果
 
-# 仓库地址：https://github.com/my2061/3DWatchRoom.git
+#### 仓库地址：https://github.com/my2061/3DWatchRoom.git
 
 ## 基础概念
 在ThreeJs里，一个基础的3d世界是由场景（Scene）、相机（Camera）、渲染器（renderer）组成的。
@@ -153,13 +153,49 @@ scene.add(ambient);                             //添加到场景中
 ## 开始构建3D世界
 
 #### 1. 创建场景 
-#### 2. 创建相机 
+```js
+var scene = new THREE.Scene();
+```
+#### 2. 创建透视相机 
+```js
+//相机设置
+var width = window.innerWidth; //窗口宽度
+var height = window.innerHeight; //窗口高度
+var k = width / height; //窗口宽高比
+
+//透视投影相机
+var camera = new THREE.PerspectiveCamera(60, k, 1, 1000);
+camera.position.set(200, 300, 200); //设置相机位置
+camera.lookAt(scene.position); //设置相机方向(指向的场景对象)
+```
+
 #### 3. 创建模型（球体）
-#### 4. 设置材质
-#### 5. 设置光源
-#### 6. 加载全景图纹理
-#### 7. 设置相机位置
-#### 8. 控制器
+```js
+var geometry = new THREE.SphereGeometry(60, 40, 40); //创建一个球体几何对象
+```
+#### 4. 加载全景图纹理
+```js
+ textureLoader.load('https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fres.jsvry.cn%2Fprod%2Farticle%2F2020%2F07%2F20%2F161737xwg97sq.jpg&refer=http%3A%2F%2Fres.jsvry.cn&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1658393648&t=656528b7e11f6059faef55b13a6f508f', function (texture) {
+    var material = new THREE.MeshLambertMaterial({
+        // 设置颜色纹理贴图：Texture对象作为材质map属性的属性值
+        map: texture,//设置颜色贴图属性值
+        side: THREE.DoubleSide //设置渲染模式，里面还是外面，还是双面
+    }); //材质对象Material
+    var mesh = new THREE.Mesh(geometry, material); //网格模型对象Mesh
+    scene.add(mesh); //网格模型添加到场景中
+})
+```
+#### 5. 设置光源（只需要环境光）
+```js
+var ambient = new THREE.AmbientLight(0xffffff);
+scene.add(ambient);
+```
+#### 6. 设置相机位置
+```js
+// 摄像机放球体中心
+camera.position.set(10, 0, 0);
+```
+#### 7. 控制器
 光有画面，我想拖拉拽咋办？绑定鼠标事件？然后再控制position、scale等等？
 
 threeJs内置了轨道控制器：```OrbitControls```
@@ -168,10 +204,22 @@ threeJs内置了轨道控制器：```OrbitControls```
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
 
 // 将相机、渲染器的dom传给轨道控制器即可
-new OrbitControls(camera, renderer.domElement);
+const controls = new OrbitControls(camera, renderer.domElement);
+// 轨道控制器缩放上限最小最大值设置为1、2
+controls.minDistance = 1;
+controls.maxDistance = 2;
 ```
 
-## 性能监控-stats.js
+#### 8. 渲染器
+```js
+// 渲染器
+var renderer = new THREE.WebGLRenderer();
+renderer.setSize(width, height);                //设置渲染区域尺寸
+renderer.setClearColor(0x000000, 1);            //设置背景颜色
+document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
+```
+
+#### 9. 性能监控-stats.js
 **https://github.com/mrdoob/stats.js**
 
 ```js
@@ -181,4 +229,16 @@ stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 stats.begin();
 // 被监控的代码放在这里
 stats.end();
+```
+
+#### 10. 渲染
+```js
+//执行渲染操作
+const animate = () => {
+    stats.begin();
+    renderer.render(scene, camera);
+    stats.end();
+    requestAnimationFrame(animate);
+}
+animate();
 ```

@@ -51,7 +51,13 @@ export default function Index() {
 
         
         // 摄像机放球体中心
-        camera.position.set(10, 0, 0);                  
+        camera.position.set(10, 0, 0);     
+        
+        // 渲染器
+        var renderer = new THREE.WebGLRenderer();
+        renderer.setSize(width, height);                //设置渲染区域尺寸
+        renderer.setClearColor(0x000000, 1);            //设置背景颜色
+        document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
 
         // 控制器
         const controls = new OrbitControls(camera, renderer.domElement);
@@ -64,12 +70,6 @@ export default function Index() {
         stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
         threeWrapper.current.appendChild(stats.dom);
 
-        // 渲染器
-        var renderer = new THREE.WebGLRenderer();
-        renderer.setSize(width, height);                //设置渲染区域尺寸
-        renderer.setClearColor(0x000000, 1);            //设置背景颜色
-        document.body.appendChild(renderer.domElement); //body元素中插入canvas对象
-  
          //执行渲染操作
          const animate = () => {
             stats.begin();

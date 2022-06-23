@@ -7,7 +7,7 @@ export default class componentName extends Component {
     return (
       <div className='app-wrapper'>
         <ThreeIntroduce/>
-        <WatchRoom3D/>
+        {/* <WatchRoom3D/> */}
       </div>
     )
   }

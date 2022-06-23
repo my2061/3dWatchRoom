@@ -1,20 +1,23 @@
-import React, {useEffect, useRef} from 'react'
+import React, { useEffect } from 'react'
+import * as THREE from "three"
+import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js'
+import Stats from "stats.js"
 
-export default function index() {
+export default function Index() {
 
-    const threeWrapper = useRef();
-
-    useEffect(()=>{
+    useEffect(() => {
         initThree();
     }, [])
 
-    const initThree = ()=> {
-
+    const initThree = () => {
+        // code
+        
+        
     }
 
     return (
         <div className="three-wrapper" ref={threeWrapper}>
-            
+
         </div>
     )
 }
